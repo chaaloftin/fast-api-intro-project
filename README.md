@@ -11,15 +11,22 @@ Before you begin, ensure you have met the following requirements:
 
 ## Installation
 
-To install this project, follow these steps:
+To install this project, follow these steps and then :
 
 ```bash
 git clone https://github.com/your-username/your-project
 cd your-project
 poetry shell
 poetry install
-uvicorn main:app --reload # start the server
+uvicorn main:app --reload # start the server at http://127.0.0.1:8000
 ```
+
+> [!IMPORTANT]
+> The command uvicorn main:app refers to:
+>
+> main: the file main.py (the Python "module").
+> app: the object created inside of main.py with the line app = FastAPI().
+> --reload: make the server restart after code changes. Only use for development.
 
 ## Troubleshooting
 
