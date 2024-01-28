@@ -1,6 +1,6 @@
 from enum import Enum
-from typing import Optional, Union
-from fastapi import FastAPI
+from typing import Annotated, Optional, Union
+from fastapi import FastAPI, Query
 
 from fast_api_intro_project.schemas.Item import ItemModel
 
@@ -71,20 +71,43 @@ async def update_item(item_id: int, item: ItemModel, q: Union[str, None] = None)
 # Query params are function parameters that are not part of the path parameters
 # valid Truthy values: on, True, true, 1, yes
 # ex: /items/?skip=2&limit=3&last_entry_only=anything
-@app.get("/items/")
-async def read_item(skip: int = 0, limit: int = 10, last_entry_only: bool = False):
-    items = fake_items_db[skip : skip + limit]
+# @app.get("/items/")
+# async def read_item(skip: int = 0, limit: int = 10, last_entry_only: bool = False):
+#     items = fake_items_db[skip : skip + limit]
 
-    if (last_entry_only):
-        return items[-1]
-    return fake_items_db[skip : skip + limit]
+#     if (last_entry_only):
+#         return items[-1]
+#     return fake_items_db[skip : skip + limit]
 
 # First two params are required
 # third param has default value
 # fourth param is optional and also accepts None
-@app.get("/items/{item_id}")
+# @app.get("/items/{item_id}")
 async def get_user_item(
     item_id: str, needy: str, skip: int = 0, limit: Union[int, None] = None
 ):
     item = {"item_id": item_id, "needy": needy, "skip": skip, "limit": limit}
     return item
+
+# Use Pydantic models from serialization ops and validation
+# Using Annotations perform extra validation on params and enhance documentation
+# Note that endpoints can deprecated with Query
+@app.get("/items/")
+async def get_items(
+    q: Annotated[
+        Union[str, None],
+        Query(
+            alias="item-query",
+            title="Query string",
+            description="Query string for the items to search in the database that have a good match",
+            min_length=3,
+            max_length=50,
+            pattern="^fixedquery$",
+            deprecated=True,
+        ),
+    ] = None,
+):
+    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
+    if q:
+        results.update({"q": q})
+    return results
