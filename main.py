@@ -1,8 +1,9 @@
 from enum import Enum
 from typing import Annotated, Optional, Union
-from fastapi import FastAPI, Path, Query
+from fastapi import Body, FastAPI, Path, Query
 
 from fast_api_intro_project.schemas.Item import ItemModel
+from fast_api_intro_project.schemas.user import UserModel
 
 
 app = FastAPI()
@@ -61,12 +62,31 @@ async def create_item(item: ItemModel):
 # If the parameter is of a singular type (like int, float, str, bool, etc) it will be interpreted as a query parameter.
 # If the parameter is declared to be of the type of a Pydantic model, it will be interpreted as a request body.
 # ex: /items/1?q=example_querygit 
+# @app.put("/items/{item_id}")
+# async def update_item(item_id: int, item: ItemModel, q: Union[str, None] = None):
+#     result = {"item_id": item_id, **item.model_dump()}
+#     if q:
+#         result.update({"q": q})
+#     return result
+
+
+# Any Pydantic Model that is added as a param is considered a body param
+# Individual non-Pydantic models can be added as body param via Annotated (ex: Annotated[Item, Body(embed=True)])
+# Optional body params simply required a default value of None
+# Multiple params causes each body param to mapped to a key of the same name
 @app.put("/items/{item_id}")
-async def update_item(item_id: int, item: ItemModel, q: Union[str, None] = None):
-    result = {"item_id": item_id, **item.model_dump()}
+async def update_item(
+    *,
+    item_id: int,
+    item: ItemModel,
+    user: UserModel,
+    importance: Annotated[int, Body(gt=0)],
+    q: Union[str, None] = None,
+):
+    results = {"item_id": item_id, "item": item, "user": user, "importance": importance}
     if q:
-        result.update({"q": q})
-    return result
+        results.update({"q": q})
+    return results
 
 # Query params are function parameters that are not part of the path parameters
 # valid Truthy values: on, True, true, 1, yes
