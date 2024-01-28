@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import Annotated, Optional, Union
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Path, Query
 
 from fast_api_intro_project.schemas.Item import ItemModel
 
@@ -108,6 +108,23 @@ async def get_items(
     ] = None,
 ):
     results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
+    if q:
+        results.update({"q": q})
+    return results
+
+# Path parameters work just like query params
+# gt: greater than
+# ge: greater than or equal
+# lt: less than
+# le: less than or equal
+@app.get("/items/{item_id}")
+async def read_items(
+    *,
+    item_id: Annotated[int, Path(title="The ID of the item to get", ge=0, le=1000)],
+    q: str,
+    size: Annotated[float, Query(gt=0, lt=10.5)],
+):
+    results = {"item_id": item_id}
     if q:
         results.update({"q": q})
     return results
