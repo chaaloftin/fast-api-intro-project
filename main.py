@@ -70,8 +70,8 @@ async def update_item(item_id: int, item: ItemModel, q: Union[str, None] = None)
 
 # Query params are function parameters that are not part of the path parameters
 # valid Truthy values: on, True, true, 1, yes
-# ex: /items?skip=2&limit=3&last_entry_only=anything
-@app.get("/items")
+# ex: /items/?skip=2&limit=3&last_entry_only=anything
+@app.get("/items/")
 async def read_item(skip: int = 0, limit: int = 10, last_entry_only: bool = False):
     items = fake_items_db[skip : skip + limit]
 
@@ -83,7 +83,7 @@ async def read_item(skip: int = 0, limit: int = 10, last_entry_only: bool = Fals
 # third param has default value
 # fourth param is optional and also accepts None
 @app.get("/items/{item_id}")
-async def read_user_item(
+async def get_user_item(
     item_id: str, needy: str, skip: int = 0, limit: Union[int, None] = None
 ):
     item = {"item_id": item_id, "needy": needy, "skip": skip, "limit": limit}
