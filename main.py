@@ -2,6 +2,9 @@ from enum import Enum
 from typing import Optional, Union
 from fastapi import FastAPI
 
+from fast_api_intro_project.schemas.Item import ItemModel
+
+
 app = FastAPI()
 
 fake_items_db = [{"item_name": "Foo"}, {"item_name": "Bar"}, {"item_name": "Baz"}]
@@ -38,6 +41,32 @@ async def read_file(file_path: str):
 
 
 ## ITEMS ENDPOINTS ##
+
+# Use Pydantic models from serialization ops and validation
+@app.post("/items/")
+async def create_item(item: ItemModel):
+    item_dict = item.model_dump()
+
+    if item.tax:
+        price_with_tax = item.price + item.tax
+        item_dict.update({"price_with_tax": price_with_tax})
+
+    return {
+        "message": "item created",
+        "item": item_dict
+    }
+
+# Request body, path, and query parameters decalred in same signature
+# If the parameter is also declared in the path, it will be used as a path parameter.
+# If the parameter is of a singular type (like int, float, str, bool, etc) it will be interpreted as a query parameter.
+# If the parameter is declared to be of the type of a Pydantic model, it will be interpreted as a request body.
+# ex: /items/1?q=example_querygit 
+@app.put("/items/{item_id}")
+async def update_item(item_id: int, item: ItemModel, q: Union[str, None] = None):
+    result = {"item_id": item_id, **item.model_dump()}
+    if q:
+        result.update({"q": q})
+    return result
 
 # Query params are function parameters that are not part of the path parameters
 # valid Truthy values: on, True, true, 1, yes
