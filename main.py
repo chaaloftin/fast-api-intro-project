@@ -77,9 +77,9 @@ async def create_item(item: ItemModel):
 @app.put("/items/{item_id}")
 async def update_item(
     *,
-    item_id: int,
+    item_id: Annotated[int, Path(description="The id for a given item", ge=0, le=1000)],
     item: ItemModel,
-    user: UserModel,
+    user: Union[UserModel, None] = None,
     importance: Annotated[int, Body(gt=0)],
     q: Union[str, None] = None,
 ):
