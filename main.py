@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Annotated, Optional, Union
+from typing import Annotated, Union
 from fastapi import Body, FastAPI, Path, Query
 
 from fast_api_intro_project.schemas.Item import ItemModel
@@ -103,11 +103,11 @@ async def update_item(
 # third param has default value
 # fourth param is optional and also accepts None
 # @app.get("/items/{item_id}")
-async def get_user_item(
-    item_id: str, needy: str, skip: int = 0, limit: Union[int, None] = None
-):
-    item = {"item_id": item_id, "needy": needy, "skip": skip, "limit": limit}
-    return item
+# async def get_user_item(
+#     item_id: str, needy: str, skip: int = 0, limit: Union[int, None] = None
+# ):
+#     item = {"item_id": item_id, "needy": needy, "skip": skip, "limit": limit}
+#     return item
 
 # Use Pydantic models from serialization ops and validation
 # Using Annotations perform extra validation on params and enhance documentation
@@ -148,3 +148,5 @@ async def read_items(
     if q:
         results.update({"q": q})
     return results
+
+
