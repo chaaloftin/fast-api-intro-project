@@ -78,7 +78,17 @@ async def create_item(item: ItemModel):
 async def update_item(
     *,
     item_id: Annotated[int, Path(description="The id for a given item", ge=0, le=1000)],
-    item: ItemModel,
+    item: Annotated[ItemModel, Body(
+            examples=[
+                {
+                    "name": "Foo",
+                    "description": "A very nice Item",
+                    "price": 35.4,
+                    "tax": 3.2,
+                }
+            ],
+        ),
+    ],
     user: Union[UserModel, None] = None,
     importance: Annotated[int, Body(gt=0)],
     q: Union[str, None] = None,
