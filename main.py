@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import Annotated, Union
-from fastapi import Body, FastAPI, Path, Query
+from fastapi import Body, Cookie, FastAPI, Path, Query
 
 from fast_api_intro_project.schemas.Item import ItemModel
 from fast_api_intro_project.schemas.user import UserModel
@@ -136,6 +136,7 @@ async def get_items(
             deprecated=True,
         ),
     ] = None,
+    advertisement_id: Annotated[Union[str, None], Cookie()] = None
 ):
     results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
     if q:
