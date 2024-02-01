@@ -1,4 +1,6 @@
+from datetime import date, datetime, time
 from typing import Union
+from uuid import UUID
 from pydantic import BaseModel, Field
 
 from fast_api_intro_project.schemas.image import ImageModel
@@ -13,6 +15,13 @@ class ItemModel(BaseModel):
     tax: Union[float, None] = Field(default=None, examples=[3.2])
     tags: set[str] = set()
     images: Union[list[ImageModel], None] = None
+    uuid: Union[UUID, None] = None
+    creation_time: Union[datetime, None] = None
+    date_displayed = Union[date, None] = None
+    time_displayed = Union[time, None] = None
+    byte_representation = Union[bytes, None] = None
+
+
 
     model_config = {
         "json_schema_extra": {
